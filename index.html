@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>United War Command | APEX</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111418;
+    --surface2: #181c22;
+    --border: #252b35;
+    --accent: #3b8bff;
+    --accent2: #e8c94a;
+    --text: #e8eaf0;
+    --muted: #7a8294;
+    --red: #e84a4a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,12,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+    height: 64px;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.12em;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-logo span {
+    color: var(--accent);
+  }
+
+  .nav-tag {
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--text); }
+
+  /* HERO */
+  #home {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 64px;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.35;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(59,139,255,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    max-width: 900px;
+    padding: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.95;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-title .accent { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-badges {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 0.5rem 1.2rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-radius: 4px;
+  }
+
+  .badge.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 0.05em;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  .section-divider {
+    width: 60px; height: 3px;
+    background: var(--accent);
+    margin-bottom: 2.5rem;
+  }
+
+  .section-text {
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 1.05rem;
+    max-width: 680px;
+  }
+
+  /* ABOUT */
+  #about .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .about-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .about-card:hover { border-color: var(--accent); }
+
+  .about-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .about-card:hover::before { opacity: 1; }
+
+  .about-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 0.8rem;
+  }
+
+  .about-card p {
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  /* CHAIN OF COMMAND */
+  #command {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    max-width: 100%;
+    padding: 6rem 2rem;
+  }
+
+  #command .inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .coc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2.5rem;
+  }
+
+  .coc-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.4rem 1.6rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .coc-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .coc-rank-icon {
+    width: 42px; height: 42px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .coc-info { flex: 1; }
+
+  .coc-rank {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+
+  .coc-names {
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .coc-names span {
+    display: block;
+    color: var(--muted);
+  }
+
+  .tier-marshal { border-left: 3px solid var(--accent2); }
+  .tier-general { border-left: 3px solid var(--accent); }
+  .tier-officer  { border-left: 3px solid #7b5ea7; }
+  .tier-enlisted { border-left: 3px solid var(--muted); }
+
+  /* RULES */
+  #rules .rules-list {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .rule-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.2rem 1.6rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    transition: border-color 0.2s;
+  }
+
+  .rule-item:hover { border-color: var(--accent); }
+
+  .rule-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--accent);
+    line-height: 1;
+    min-width: 2.5rem;
+    opacity: 0.5;
+  }
+
+  .rule-text h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .rule-text p {
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  /* ALLIES */
+  #allies .allies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2.5rem;
+  }
+
+  .ally-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.8rem 1.4rem;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .ally-card:hover {
+    border-color: var(--accent2);
+    transform: translateY(-3px);
+  }
+
+  .ally-icon {
+    width: 56px; height: 56px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 1rem;
+  }
+
+  .ally-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .ally-status {
+    font-size: 0.78rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 2.5rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.08em;
+  }
+
+  footer strong { color: var(--accent); }
+
+  /* ANIM */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 700px) {
+    nav ul { display: none; }
+    nav { padding: 0 1.5rem; }
+    #about .about-grid { grid-template-columns: 1fr; }
+    .hero-title { font-size: 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span class="nav-tag">APEX</span>
+    United War Command
+  </div>
+  <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#command">Command</a></li>
+    <li><a href="#rules">Rules</a></li>
+    <li><a href="#allies">Allies</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home" style="max-width:100%; padding:0;">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">War Tycoon Faction · Tag: [APEX]</div>
+    <h1 class="hero-title">United<br><span class="accent">War</span><br>Command</h1>
+    <p class="hero-sub">Discipline. Unity. Dominance.</p>
+    <div class="hero-badges">
+      <span class="badge primary">Active Faction</span>
+      <span class="badge">War Tycoon</span>
+      <span class="badge">Est. 2024</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="fade-in">
+    <div class="section-label">Who We Are</div>
+    <h2 class="section-title">About APEX</h2>
+    <div class="section-divider"></div>
+    <p class="section-text">
+      United War Command, operating under the tag [APEX], is an elite War Tycoon faction built on discipline, coordination, and tactical superiority. We welcome dedicated players who are committed to the mission and loyal to the cause.
+    </p>
+  </div>
+  <div class="about-grid fade-in">
+    <div class="about-card">
+      <h3>🎯 Our Mission</h3>
+      <p>To dominate the battlefield through strategic coordination, strong leadership, and unwavering teamwork. Every member is a vital part of the machine.</p>
+    </div>
+    <div class="about-card">
+      <h3>🛡️ Our Values</h3>
+      <p>Respect, loyalty, and discipline define APEX. We hold our members to a high standard both in combat and in conduct.</p>
+    </div>
+    <div class="about-card">
+      <h3>📈 Advancement</h3>
+      <p>Active and skilled members are recognized and promoted. Show up, perform, and climb the ranks of the United War Command.</p>
+    </div>
+    <div class="about-card">
+      <h3>🤝 Community</h3>
+      <p>We're more than a faction — we're a community. Build friendships, sharpen your skills, and compete at the highest level.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHAIN OF COMMAND -->
+<div id="command">
+  <div class="inner">
+    <div class="fade-in">
+      <div class="section-label">Leadership Structure</div>
+      <h2 class="section-title">Chain of Command</h2>
+      <div class="section-divider"></div>
+      <p class="section-text">Meet the dedicated staff members who lead United War Command.</p>
+    </div>
+    <div class="coc-grid fade-in">
+      <div class="coc-card tier-marshal">
+        <div class="coc-rank-icon">⚔️</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Marshal</div>
+          <div class="coc-names">
+            <span>@Sr.Crushalot</span>
+            <span>@Ducky™</span>
+          </div>
+        </div>
+      </div>
+      <div class="coc-card tier-general">
+        <div class="coc-rank-icon">🌟</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX General</div>
+          <div class="coc-names"><span>TBD</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-general">
+        <div class="coc-rank-icon">🔰</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Staff Overseer</div>
+          <div class="coc-names"><span>TBD</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-general">
+        <div class="coc-rank-icon">⚙️</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Operations Manager</div>
+          <div class="coc-names"><span>TBD</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-officer">
+        <div class="coc-rank-icon">🔱</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Colonel</div>
+          <div class="coc-names"><span>TBD</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-officer">
+        <div class="coc-rank-icon">🎖️</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Major</div>
+          <div class="coc-names"><span>@D</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-officer">
+        <div class="coc-rank-icon">🏅</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Captain</div>
+          <div class="coc-names">
+            <span>@-Praist- mountlopa</span>
+          </div>
+        </div>
+      </div>
+      <div class="coc-card tier-enlisted">
+        <div class="coc-rank-icon">🪖</div>
+        <div class="coc-info">
+          <div class="coc-rank">Officer Corps</div>
+          <div class="coc-names"><span>Open Positions</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-enlisted">
+        <div class="coc-rank-icon">🎗️</div>
+        <div class="coc-info">
+          <div class="coc-rank">Cadet</div>
+          <div class="coc-names"><span>Entry Level</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RULES -->
+<section id="rules">
+  <div class="fade-in">
+    <div class="section-label">Code of Conduct</div>
+    <h2 class="section-title">Rules & Ranks</h2>
+    <div class="section-divider"></div>
+    <p class="section-text">All members of APEX are expected to uphold these standards at all times.</p>
+  </div>
+  <div class="rules-list fade-in">
+    <div class="rule-item">
+      <div class="rule-num">01</div>
+      <div class="rule-text">
+        <h4>Respect All Members</h4>
+        <p>Treat every member of APEX and allied factions with respect. Harassment, toxicity, or disrespect will not be tolerated.</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">02</div>
+      <div class="rule-text">
+        <h4>Follow Chain of Command</h4>
+        <p>Always follow orders from superior officers. Disputes must be raised through proper channels, not ignored or bypassed.</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">03</div>
+      <div class="rule-text">
+        <h4>No Betrayal or Leaking</h4>
+        <p>Sharing APEX strategies, plans, or internal information with enemies or outsiders is grounds for immediate removal.</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">04</div>
+      <div class="rule-text">
+        <h4>Stay Active</h4>
+        <p>Inactive members may be demoted or removed. Notify leadership if you will be away for an extended period.</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">05</div>
+      <div class="rule-text">
+        <h4>Represent APEX Professionally</h4>
+        <p>Your behavior reflects on the whole faction. Act with discipline and integrity whenever the [APEX] tag is visible.</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">06</div>
+      <div class="rule-text">
+        <h4>Promotion Is Earned</h4>
+        <p>Ranks are awarded based on activity, performance, loyalty, and leadership ability — not seniority alone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALLIES -->
+<section id="allies">
+  <div class="fade-in">
+    <div class="section-label">Diplomatic Relations</div>
+    <h2 class="section-title">Our Allies</h2>
+    <div class="section-divider"></div>
+    <p class="section-text">These factions stand alongside United War Command. Treat their members with the same respect as your own.</p>
+  </div>
+  <div class="allies-grid fade-in">
+    <div class="ally-card">
+      <div class="ally-icon">🤝</div>
+      <div class="ally-name">Ally Faction</div>
+      <div class="ally-status">Allied</div>
+    </div>
+    <div class="ally-card">
+      <div class="ally-icon">🤝</div>
+      <div class="ally-name">Ally Faction</div>
+      <div class="ally-status">Allied</div>
+    </div>
+    <div class="ally-card">
+      <div class="ally-icon">🤝</div>
+      <div class="ally-name">Ally Faction</div>
+      <div class="ally-status">Allied</div>
+    </div>
+  </div>
+  <p style="color: var(--muted); font-size: 0.9rem; margin-top: 1.5rem;">
+    ✏️ <em>Replace the ally placeholders above with your actual allied faction names!</em>
+  </p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>[APEX]</strong> United War Command &nbsp;·&nbsp; War Tycoon &nbsp;·&nbsp; All rights reserved.</p>
+</footer>
+
+<script>
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
