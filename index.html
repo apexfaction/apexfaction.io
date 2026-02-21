@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>United War Command | APEX</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111418;
+    --surface2: #181c22;
+    --border: #252b35;
+    --accent: #3b8bff;
+    --accent2: #e8c94a;
+    --text: #e8eaf0;
+    --muted: #7a8294;
+    --red: #e84a4a;
+    --green: #4ae87a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,12,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+    height: 64px;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.12em;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-tag {
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  nav a:hover { color: var(--text); }
+
+  .nav-discord {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #5865F2;
+    color: #fff !important;
+    padding: 6px 14px;
+    border-radius: 5px;
+    font-weight: 700;
+    transition: background 0.2s, transform 0.2s !important;
+  }
+  .nav-discord:hover { background: #4752c4 !important; color: #fff !important; transform: translateY(-1px); }
+
+  /* HERO */
+  #home {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 64px;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.35;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(59,139,255,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    max-width: 900px;
+    padding: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.95;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-title .accent { color: var(--accent); }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-badges {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .badge {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 0.5rem 1.2rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-radius: 4px;
+  }
+
+  .badge.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.8rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-discord {
+    background: #5865F2;
+    color: #fff;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 0.05em;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  .section-divider {
+    width: 60px; height: 3px;
+    background: var(--accent);
+    margin-bottom: 2.5rem;
+  }
+
+  .section-text {
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 1.05rem;
+    max-width: 680px;
+  }
+
+  /* ABOUT */
+  #about .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .about-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .about-card:hover { border-color: var(--accent); }
+
+  .about-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .about-card:hover::before { opacity: 1; }
+
+  .about-card h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 0.8rem;
+  }
+
+  .about-card p { color: var(--muted); line-height: 1.7; font-size: 0.95rem; }
+
+  /* CHAIN OF COMMAND */
+  #command {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    max-width: 100%;
+    padding: 6rem 2rem;
+  }
+
+  #command .inner { max-width: 1100px; margin: 0 auto; }
+
+  .coc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2.5rem;
+  }
+
+  .coc-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.4rem 1.6rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .coc-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  .coc-rank-icon {
+    width: 42px; height: 42px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .coc-info { flex: 1; }
+
+  .coc-rank {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+
+  .coc-names { font-size: 0.92rem; color: var(--text); line-height: 1.6; }
+  .coc-names span { display: block; color: var(--muted); }
+
+  .tier-marshal { border-left: 3px solid var(--accent2); }
+  .tier-general { border-left: 3px solid var(--accent); }
+  .tier-officer  { border-left: 3px solid #7b5ea7; }
+  .tier-enlisted { border-left: 3px solid var(--muted); }
+
+  /* RULES */
+  #rules .rules-list {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .rule-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.2rem 1.6rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    transition: border-color 0.2s;
+  }
+
+  .rule-item:hover { border-color: var(--accent); }
+
+  .rule-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--accent);
+    line-height: 1;
+    min-width: 2.5rem;
+    opacity: 0.5;
+  }
+
+  .rule-text h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .rule-text p { color: var(--muted); font-size: 0.92rem; line-height: 1.6; }
+
+  /* ALLIES */
+  #allies .allies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2.5rem;
+  }
+
+  .ally-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.8rem 1.4rem;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .ally-card:hover { border-color: var(--accent2); transform: translateY(-3px); }
+
+  .ally-icon {
+    width: 56px; height: 56px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin: 0 auto 1rem;
+  }
+
+  .ally-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .ally-status {
+    font-size: 0.78rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  /* ===== APPLY SECTION ===== */
+  #apply {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    max-width: 100%;
+    padding: 6rem 2rem;
+  }
+
+  #apply .inner { max-width: 1100px; margin: 0 auto; }
+
+  .apply-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 3rem;
+    align-items: start;
+  }
+
+  /* Requirements panel */
+  .req-panel {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+  }
+
+  .req-panel h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .req-category {
+    margin-bottom: 1.4rem;
+  }
+
+  .req-category-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .req-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 0.3rem;
+  }
+
+  .req-item::before {
+    content: '▸';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .req-note {
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    background: rgba(59,139,255,0.08);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  /* Application form */
+  .apply-form-wrap {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+  }
+
+  .apply-form-wrap h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.3rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.7rem 1rem;
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--accent);
+  }
+
+  .form-group textarea { resize: vertical; min-height: 80px; }
+
+  .form-group select option { background: var(--surface2); }
+
+  .requirements-check {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1.3rem;
+  }
+
+  .requirements-check p {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+  }
+
+  .req-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+
+  .req-checkbox:hover { color: var(--text); }
+
+  .req-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .submit-btn:hover { background: #2a7aee; transform: translateY(-1px); }
+  .submit-btn:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+  /* Alert messages */
+  .alert {
+    display: none;
+    padding: 0.9rem 1.1rem;
+    border-radius: 5px;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .alert.success {
+    background: rgba(74, 232, 122, 0.1);
+    border: 1px solid var(--green);
+    color: var(--green);
+  }
+
+  .alert.error {
+    background: rgba(232, 74, 74, 0.1);
+    border: 1px solid var(--red);
+    color: var(--red);
+  }
+
+  /* DISCORD BANNER */
+  .discord-banner {
+    background: linear-gradient(135deg, #5865F2 0%, #404EED 100%);
+    border-radius: 8px;
+    padding: 2rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .discord-banner-text h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.05em;
+    color: #fff;
+    margin-bottom: 0.3rem;
+  }
+
+  .discord-banner-text p {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.95rem;
+  }
+
+  .discord-banner .btn-white {
+    background: #fff;
+    color: #5865F2;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.7rem 1.6rem;
+    border-radius: 5px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 0.2s, opacity 0.2s;
+    display: inline-block;
+  }
+
+  .discord-banner .btn-white:hover { transform: translateY(-2px); opacity: 0.9; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 2.5rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.08em;
+  }
+
+  footer strong { color: var(--accent); }
+
+  /* ANIM */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 700px) {
+    nav ul { display: none; }
+    nav { padding: 0 1.5rem; }
+    #about .about-grid { grid-template-columns: 1fr; }
+    .hero-title { font-size: 4rem; }
+    .apply-layout { grid-template-columns: 1fr; }
+    .discord-banner { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span class="nav-tag">APEX</span>
+    United War Command
+  </div>
+  <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#command">Command</a></li>
+    <li><a href="#rules">Rules</a></li>
+    <li><a href="#allies">Allies</a></li>
+    <li><a href="#apply">Apply</a></li>
+    <li><a href="https://discord.gg/muBpBaPeZF" target="_blank" class="nav-discord">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Discord
+    </a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home" style="max-width:100%; padding:0;">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">War Tycoon Faction · Tag: [APEX]</div>
+    <h1 class="hero-title">United<br><span class="accent">War</span><br>Command</h1>
+    <p class="hero-sub">Discipline. Unity. Dominance.</p>
+    <div class="hero-badges">
+      <span class="badge primary">Active Faction</span>
+      <span class="badge">War Tycoon</span>
+      <span class="badge">Est. 2026</span>
+    </div>
+    <div class="hero-actions">
+      <a href="#apply" class="btn btn-primary">Apply to Join</a>
+      <a href="https://discord.gg/muBpBaPeZF" target="_blank" class="btn btn-discord">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Join Discord
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="fade-in">
+    <div class="section-label">Who We Are</div>
+    <h2 class="section-title">About APEX</h2>
+    <div class="section-divider"></div>
+    <p class="section-text">
+      United War Command, operating under the tag [APEX], is an elite War Tycoon faction built on discipline, coordination, and tactical superiority. We welcome dedicated players who are committed to the mission and loyal to the cause.
+    </p>
+  </div>
+  <div class="about-grid fade-in">
+    <div class="about-card">
+      <h3>🎯 Our Mission</h3>
+      <p>To dominate the battlefield through strategic coordination, strong leadership, and unwavering teamwork. Every member is a vital part of the machine.</p>
+    </div>
+    <div class="about-card">
+      <h3>🛡️ Our Values</h3>
+      <p>Respect, loyalty, and discipline define APEX. We hold our members to a high standard both in combat and in conduct.</p>
+    </div>
+    <div class="about-card">
+      <h3>📈 Advancement</h3>
+      <p>Active and skilled members are recognized and promoted. Show up, perform, and climb the ranks of the United War Command.</p>
+    </div>
+    <div class="about-card">
+      <h3>🤝 Community</h3>
+      <p>We're more than a faction — we're a community. Build friendships, sharpen your skills, and compete at the highest level.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CHAIN OF COMMAND -->
+<div id="command">
+  <div class="inner">
+    <div class="fade-in">
+      <div class="section-label">Leadership Structure</div>
+      <h2 class="section-title">Chain of Command</h2>
+      <div class="section-divider"></div>
+      <p class="section-text">Meet the dedicated staff members who lead United War Command.</p>
+    </div>
+    <div class="coc-grid fade-in">
+      <div class="coc-card tier-marshal">
+        <div class="coc-rank-icon">⚔️</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Marshal</div>
+          <div class="coc-names">
+            <span>@Sr.Crushalot</span>
+            <span>@Ducky™</span>
+          </div>
+        </div>
+      </div>
+      <div class="coc-card tier-general">
+        <div class="coc-rank-icon">🌟</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX General</div>
+          <div class="coc-names"><span>TBD</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-general">
+        <div class="coc-rank-icon">🔰</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Staff Overseer</div>
+          <div class="coc-names"><span>TBD</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-general">
+        <div class="coc-rank-icon">⚙️</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Operations Manager</div>
+          <div class="coc-names"><span>TBD</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-officer">
+        <div class="coc-rank-icon">🔱</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Colonel</div>
+          <div class="coc-names"><span>TBD</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-officer">
+        <div class="coc-rank-icon">🎖️</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Major</div>
+          <div class="coc-names"><span>@D</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-officer">
+        <div class="coc-rank-icon">🏅</div>
+        <div class="coc-info">
+          <div class="coc-rank">APEX Captain</div>
+          <div class="coc-names"><span>@-Praist- mountlopa</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-enlisted">
+        <div class="coc-rank-icon">🪖</div>
+        <div class="coc-info">
+          <div class="coc-rank">Officer Corps</div>
+          <div class="coc-names"><span>Open Positions</span></div>
+        </div>
+      </div>
+      <div class="coc-card tier-enlisted">
+        <div class="coc-rank-icon">🎗️</div>
+        <div class="coc-info">
+          <div class="coc-rank">Cadet</div>
+          <div class="coc-names"><span>Entry Level</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RULES -->
+<section id="rules">
+  <div class="fade-in">
+    <div class="section-label">Code of Conduct</div>
+    <h2 class="section-title">Faction Rules</h2>
+    <div class="section-divider"></div>
+    <p class="section-text">All members of APEX are expected to uphold these standards at all times.</p>
+  </div>
+  <div class="rules-list fade-in">
+    <div class="rule-item">
+      <div class="rule-num">01</div>
+      <div class="rule-text">
+        <h4>Be Respectful</h4>
+        <p>Show respect to everyone in the server. Harassment, bullying, or rude behavior won't be tolerated.</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">02</div>
+      <div class="rule-text">
+        <h4>Follow Chain of Command</h4>
+        <p>Always follow orders from superior officers. Disputes must be raised through proper channels, not ignored or bypassed.</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">03</div>
+      <div class="rule-text">
+        <h4>No Betrayal or Leaking</h4>
+        <p>Sharing APEX strategies, plans, or internal information with enemies or outsiders is grounds for immediate removal.</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">04</div>
+      <div class="rule-text">
+        <h4>Stay Active</h4>
+        <p>Inactive members may be demoted or removed. Notify leadership if you will be away for an extended period.</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">05</div>
+      <div class="rule-text">
+        <h4>Represent APEX Professionally</h4>
+        <p>Your behavior reflects on the whole faction. Act with discipline and integrity whenever the [APEX] tag is visible.</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="rule-num">06</div>
+      <div class="rule-text">
+        <h4>Promotion Is Earned</h4>
+        <p>Ranks are awarded based on activity, performance, loyalty, and leadership ability — not seniority alone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALLIES -->
+<section id="allies">
+  <div class="fade-in">
+    <div class="section-label">Diplomatic Relations</div>
+    <h2 class="section-title">Our Allies</h2>
+    <div class="section-divider"></div>
+    <p class="section-text">These factions stand alongside United War Command. Treat their members with the same respect as your own.</p>
+  </div>
+  <div class="allies-grid fade-in">
+    <div class="ally-card">
+      <div class="ally-icon">🤝</div>
+      <div class="ally-name">USSR</div>
+      <div class="ally-status">Allied</div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLY -->
+<div id="apply">
+  <div class="inner">
+    <div class="fade-in">
+      <div class="section-label">Join The Faction</div>
+      <h2 class="section-title">Apply to APEX</h2>
+      <div class="section-divider"></div>
+      <p class="section-text">Think you have what it takes? Review the requirements and submit your application below. All applications are reviewed by APEX leadership.</p>
+    </div>
+
+    <div class="apply-layout fade-in">
+      <!-- Requirements -->
+      <div class="req-panel">
+        <h3>📋 Requirements</h3>
+
+        <div class="req-category">
+          <div class="req-category-title">Activity</div>
+          <div class="req-item">You MUST be active by participating in events such as raiding and Daily Tasks.</div>
+        </div>
+
+        <div class="req-category">
+          <div class="req-category-title">Rebirths</div>
+          <div class="req-item">MINIMUM 7 rebirths required. 9+ recommended to have everything unlocked.</div>
+        </div>
+
+        <div class="req-category">
+          <div class="req-category-title">Player Level</div>
+          <div class="req-item">You MUST be at least player level 5. Higher level = more likely to be recruited.</div>
+        </div>
+
+        <div class="req-category">
+          <div class="req-category-title">KDR (Kill/Death Ratio)</div>
+          <div class="req-item">We do not recommend a KD less than 1.0, but we conduct a skill test regardless.</div>
+        </div>
+
+        <div class="req-category">
+          <div class="req-category-title">Playtime</div>
+          <div class="req-item">We prefer at least 100+ hours. Anything over 75 hours is acceptable based on skill level.</div>
+        </div>
+
+        <div class="req-note">
+          These are guidelines — we do conduct a skill test. If you meet the skill requirement you may still be recruited even if you don't meet every requirement.
+        </div>
+      </div>
+
+      <!-- Application Form -->
+      <div class="apply-form-wrap">
+        <h3>📝 Submit Application</h3>
+
+        <form id="applyForm">
+          <div class="form-group">
+            <label>Roblox Username</label>
+            <input type="text" id="robloxName" placeholder="Your Roblox username" required>
+          </div>
+
+          <div class="form-group">
+            <label>Discord Username</label>
+            <input type="text" id="discordName" placeholder="e.g. username#0000 or @username" required>
+          </div>
+
+          <div class="form-group">
+            <label>Age</label>
+            <input type="number" id="age" placeholder="Your age" min="1" max="99" required>
+          </div>
+
+          <div class="requirements-check">
+            <p>Do you meet the requirements?</p>
+
+            <label class="req-checkbox">
+              <input type="checkbox" id="req-activity">
+              I am active and can participate in raids & Daily Tasks
+            </label>
+            <label class="req-checkbox">
+              <input type="checkbox" id="req-rebirths">
+              I have at least 7 rebirths (9+ preferred)
+            </label>
+            <label class="req-checkbox">
+              <input type="checkbox" id="req-level">
+              I am at least player level 5
+            </label>
+            <label class="req-checkbox">
+              <input type="checkbox" id="req-kdr">
+              My KDR is 1.0 or above (or I'm willing to do a skill test)
+            </label>
+            <label class="req-checkbox">
+              <input type="checkbox" id="req-playtime">
+              I have at least 75+ hours of playtime
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label>Anything else you'd like us to know? (optional)</label>
+            <textarea id="extraInfo" placeholder="Additional info, special skills, why you want to join APEX..."></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">Submit Application</button>
+
+          <div class="alert success" id="successAlert">
+            ✅ Your application has been submitted! Our leadership team will review it shortly. Join our Discord for updates.
+          </div>
+          <div class="alert error" id="errorAlert">
+            ❌ Something went wrong submitting your application. Please try again or reach out on Discord.
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Discord Banner -->
+    <div class="discord-banner fade-in">
+      <div class="discord-banner-text">
+        <h3>Join Our Discord</h3>
+        <p>Stay up to date with events, raids, and faction announcements. All members are required to be in the server.</p>
+      </div>
+      <a href="https://discord.gg/muBpBaPeZF" target="_blank" class="btn-white">
+        Join Server →
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p><strong>[APEX]</strong> United War Command &nbsp;·&nbsp; War Tycoon &nbsp;·&nbsp; All rights reserved.</p>
+</footer>
+
+<script>
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Application form submission
+  document.getElementById('applyForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const submitBtn = document.getElementById('submitBtn');
+    const successAlert = document.getElementById('successAlert');
+    const errorAlert = document.getElementById('errorAlert');
+
+    successAlert.style.display = 'none';
+    errorAlert.style.display = 'none';
+
+    const robloxName = document.getElementById('robloxName').value.trim();
+    const discordName = document.getElementById('discordName').value.trim();
+    const age = document.getElementById('age').value.trim();
+    const extraInfo = document.getElementById('extraInfo').value.trim();
+
+    // Gather requirements met
+    const reqLabels = {
+      'req-activity': 'Activity (raids & Daily Tasks)',
+      'req-rebirths': 'Rebirths (7+ / 9+ preferred)',
+      'req-level': 'Player Level 5+',
+      'req-kdr': 'KDR 1.0+ (or willing to skill test)',
+      'req-playtime': 'Playtime 75+ hours'
+    };
+
+    const metReqs = [];
+    const notMetReqs = [];
+
+    for (const [id, label] of Object.entries(reqLabels)) {
+      if (document.getElementById(id).checked) {
+        metReqs.push(label);
+      } else {
+        notMetReqs.push(label);
+      }
+    }
+
+    const requirementsField = metReqs.length > 0
+      ? `✅ Met: ${metReqs.join(', ')}`
+      : '❌ None checked';
+
+    const notMetField = notMetReqs.length > 0
+      ? `\n❌ Not met / unsure: ${notMetReqs.join(', ')}`
+      : '';
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    const webhookUrl = 'https://discord.com/api/webhooks/1474576972352061482/RzQYPy-aJR_Vrl7Siml7CaI4bgeTbKoqaWG-wgUe9ndZmrW55m1kgw2AfJpBAbJmkucT';
+
+    const payload = {
+      embeds: [{
+        title: '📋 New APEX Application',
+        color: 0x3b8bff,
+        fields: [
+          {
+            name: '🎮 Roblox / Discord Name',
+            value: `Roblox: **${robloxName}**\nDiscord: **${discordName}**`,
+            inline: false
+          },
+          {
+            name: '🎂 Age',
+            value: age,
+            inline: true
+          },
+          {
+            name: '📊 Requirements',
+            value: requirementsField + notMetField,
+            inline: false
+          },
+          ...(extraInfo ? [{
+            name: '💬 Additional Info',
+            value: extraInfo,
+            inline: false
+          }] : [])
+        ],
+        footer: {
+          text: 'APEX Application System · United War Command'
+        },
+        timestamp: new Date().toISOString()
+      }]
+    };
+
+    try {
+      const res = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        successAlert.style.display = 'block';
+        document.getElementById('applyForm').reset();
+      } else {
+        errorAlert.style.display = 'block';
+      }
+    } catch (err) {
+      errorAlert.style.display = 'block';
+    }
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit Application';
+  });
+</script>
+
+</body>
+</html>
