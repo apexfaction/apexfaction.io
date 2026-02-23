@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>United War Command | APEX</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:            #080508;
+    --bg2:           #0f080a;
+    --surface:       #130a0d;
+    --surface2:      #1a0d10;
+    --border:        #2a1318;
+    --border2:       #3d1c22;
+    --accent:        #c0392b;
+    --accent-bright: #e74c3c;
+    --accent-dim:    #7a1f18;
+    --gold:          #d4a54a;
+    --gold-dim:      #8a6020;
+    --text:          #e8ddd8;
+    --muted:         #7a6560;
+    --muted2:        #4a3535;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      linear-gradient(127deg,
+        transparent 0%, transparent 38%,
+        rgba(120,15,10,0.22) 38%, rgba(80,8,6,0.18) 52%,
+        transparent 52%, transparent 100%),
+      radial-gradient(ellipse at 50% 0%, rgba(150,20,15,0.12) 0%, transparent 65%),
+      radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.6) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.04;
+    background-image:
+      repeating-linear-gradient(0deg,   transparent, transparent 28px, rgba(200,60,40,0.9) 28px, rgba(200,60,40,0.9) 29px),
+      repeating-linear-gradient(90deg,  transparent, transparent 28px, rgba(200,60,40,0.9) 28px, rgba(200,60,40,0.9) 29px);
+    pointer-events: none;
+  }
+
+  .slash-line {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none; overflow: hidden;
+  }
+  .slash-line::before, .slash-line::after {
+    content: ''; position: absolute; transform-origin: top left; top: -50%;
+    height: 200%;
+  }
+  .slash-line::before {
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, rgba(192,57,43,0.35) 40%, rgba(192,57,43,0.15) 60%, transparent);
+    transform: rotate(-37deg) translateX(55vw);
+  }
+  .slash-line::after {
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(192,57,43,0.2) 40%, transparent);
+    transform: rotate(-37deg) translateX(58vw);
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(8,5,8,0.95);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+    height: 64px;
+  }
+  nav::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(192,57,43,0.55) 30%, rgba(192,57,43,0.55) 70%, transparent);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.12em;
+    color: var(--text);
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent-bright); }
+  .nav-tag {
+    background: var(--accent); color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.15em; padding: 2px 7px; border-radius: 2px;
+  }
+
+  nav ul { list-style: none; display: flex; gap: 2.5rem; }
+
+  nav a, .nav-btn {
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem; letter-spacing: 0.12em; text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+    background: none; border: none; cursor: pointer; padding: 0;
+  }
+  nav a:hover, .nav-btn:hover { color: var(--text); }
+  nav a::after, .nav-btn::after {
+    content: ''; position: absolute;
+    bottom: -4px; left: 0; right: 0; height: 1px;
+    background: var(--accent);
+    transform: scaleX(0); transition: transform 0.2s; transform-origin: left;
+  }
+  nav a:hover::after, .nav-btn:hover::after { transform: scaleX(1); }
+  nav a.nav-active, .nav-btn.nav-active { color: var(--accent-bright); }
+  nav a.nav-active::after, .nav-btn.nav-active::after { transform: scaleX(1); }
+
+  .nav-discord {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: #5865F2; color: #fff !important;
+    padding: 6px 14px; border-radius: 3px; font-weight: 700;
+    transition: background 0.2s, transform 0.2s !important;
+  }
+  .nav-discord::after { display: none !important; }
+  .nav-discord:hover { background: #4752c4 !important; transform: translateY(-1px); }
+
+  section {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative; z-index: 2;
+  }
+
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem; letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--accent-bright); margin-bottom: 0.6rem; opacity: 0.8;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 0.05em; color: var(--text); margin-bottom: 1rem;
+  }
+  .section-divider {
+    width: 50px; height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    margin-bottom: 2.5rem;
+  }
+  .section-text { color: var(--muted); line-height: 1.8; font-size: 1.05rem; max-width: 680px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.78rem 2rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    border-radius: 2px; text-decoration: none; cursor: pointer; border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 4px 20px rgba(192,57,43,0.35); }
+  .btn-primary:hover { box-shadow: 0 6px 28px rgba(192,57,43,0.55); }
+  .btn-discord { background: #5865F2; color: #fff; }
+
+  .fade-in { opacity: 0; transform: translateY(18px); transition: opacity 0.65s ease, transform 0.65s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+
+  #home {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden; padding-top: 64px;
+  }
+  .hero-glow {
+    position: absolute; width: 800px; height: 500px;
+    background: radial-gradient(ellipse, rgba(150,20,10,0.14) 0%, transparent 70%);
+    top: 40%; left: 50%; transform: translate(-50%,-50%); pointer-events: none;
+  }
+  .hero-scar { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .hero-scar::before {
+    content: ''; position: absolute; width: 3px; height: 300%;
+    background: linear-gradient(to bottom, transparent 0%, rgba(192,57,43,0.5) 35%, rgba(192,57,43,0.25) 65%, transparent 100%);
+    left: 60%; top: -100%; transform: rotate(-25deg);
+  }
+  .hero-scar::after {
+    content: 'APEX'; position: absolute;
+    bottom: 10%; right: -2%;
+    font-family: 'Bebas Neue', sans-serif; font-size: 22vw;
+    color: rgba(192,57,43,0.04); letter-spacing: 0.05em; line-height: 1;
+    pointer-events: none; user-select: none;
+  }
+  .hero-content {
+    position: relative; z-index: 2; text-align: center;
+    max-width: 900px; padding: 2rem;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.82rem; letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--accent-bright); margin-bottom: 1.4rem; opacity: 0.9;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 10vw, 9rem);
+    line-height: 0.92; letter-spacing: 0.04em; color: var(--text);
+    margin-bottom: 0.6rem; text-shadow: 0 0 80px rgba(192,57,43,0.3);
+  }
+  .hero-title .accent { color: var(--accent-bright); text-shadow: 0 0 60px rgba(231,76,60,0.5), 0 2px 0 rgba(0,0,0,0.8); }
+  .hero-sub { font-size: 1.1rem; color: var(--muted); margin-bottom: 2.5rem; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase; }
+  .hero-badges { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.5rem; }
+  .badge {
+    border: 1px solid var(--border2); background: rgba(19,10,13,0.8);
+    padding: 0.45rem 1.1rem;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); border-radius: 2px;
+  }
+  .badge.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  #about .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem; }
+  .about-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 3px;
+    padding: 2rem; position: relative; overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+  .about-card:hover { border-color: var(--accent-dim); transform: translateY(-2px); }
+  .about-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+    background: linear-gradient(to bottom, var(--accent), transparent); opacity: 0; transition: opacity 0.25s;
+  }
+  .about-card:hover::before { opacity: 1; }
+  .about-card::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(192,57,43,0.04) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.25s; pointer-events: none;
+  }
+  .about-card:hover::after { opacity: 1; }
+  .about-card h3 {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.15rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text);
+    margin-bottom: 0.8rem; position: relative; z-index: 1;
+  }
+  .about-card p { color: var(--muted); line-height: 1.75; font-size: 0.97rem; position: relative; z-index: 1; }
+
+  #command {
+    background: var(--surface);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    max-width: 100%; padding: 6rem 2rem; position: relative; z-index: 2;
+  }
+  #command::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(192,57,43,0.05) 0%, transparent 50%); pointer-events: none;
+  }
+  #command .inner { max-width: 1100px; margin: 0 auto; position: relative; }
+  .coc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1rem; margin-top: 2.5rem; }
+  .coc-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 3px;
+    padding: 1.3rem 1.5rem; display: flex; align-items: flex-start; gap: 1rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .coc-card:hover { border-color: var(--accent-dim); transform: translateY(-2px); }
+  .coc-rank-icon {
+    width: 40px; height: 40px; background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; font-weight: 700;
+    letter-spacing: 0.05em; color: var(--muted); flex-shrink: 0;
+  }
+  .coc-info { flex: 1; }
+  .coc-rank { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent-bright); margin-bottom: 0.25rem; opacity: 0.8; }
+  .coc-names { font-size: 0.92rem; color: var(--text); line-height: 1.6; font-weight: 600; }
+  .coc-names span { display: block; color: var(--muted); font-weight: 400; }
+  .tier-marshal { border-left: 3px solid var(--gold); }
+  .tier-general { border-left: 3px solid var(--accent); }
+  .tier-officer  { border-left: 3px solid var(--accent-dim); }
+  .tier-enlisted { border-left: 3px solid var(--muted2); }
+
+  #rules .rules-list { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 0.8rem; }
+  .rule-item {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 3px;
+    padding: 1.2rem 1.6rem; display: flex; align-items: flex-start; gap: 1.2rem;
+    transition: border-color 0.2s; position: relative; overflow: hidden;
+  }
+  .rule-item:hover { border-color: var(--accent-dim); }
+  .rule-item::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 0; height: 2px;
+    background: var(--accent); transition: width 0.3s;
+  }
+  .rule-item:hover::before { width: 100%; }
+  .rule-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--accent); line-height: 1; min-width: 2.5rem; opacity: 0.3; }
+  .rule-text h4 { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); margin-bottom: 0.3rem; }
+  .rule-text p { color: var(--muted); font-size: 0.93rem; line-height: 1.65; }
+
+  #allies .allies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 1.2rem; margin-top: 2.5rem; }
+  .ally-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 3px;
+    padding: 1.8rem 1.4rem; text-align: center;
+    transition: border-color 0.2s, transform 0.2s; position: relative; overflow: hidden;
+  }
+  .ally-card:hover { border-color: var(--gold-dim); transform: translateY(-3px); }
+  .ally-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .ally-card:hover::after { opacity: 1; }
+  .ally-icon {
+    width: 52px; height: 52px; background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin: 0 auto 1rem;
+  }
+  .ally-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin-bottom: 0.3rem; }
+  .ally-status { font-size: 0.75rem; color: var(--gold); letter-spacing: 0.12em; text-transform: uppercase; font-family: 'Barlow Condensed', sans-serif; }
+
+  #apply {
+    background: var(--surface);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    max-width: 100%; padding: 6rem 2rem; position: relative; z-index: 2;
+  }
+  #apply::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(192,57,43,0.04) 0%, transparent 50%); pointer-events: none;
+  }
+  #apply .inner { max-width: 1100px; margin: 0 auto; position: relative; }
+  .apply-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-top: 3rem; align-items: start; }
+  .req-panel, .apply-form-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 3px; padding: 2rem; }
+  .req-panel h3, .apply-form-wrap h3 {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text);
+    margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .req-category { margin-bottom: 1.4rem; }
+  .req-category-title { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-bright); margin-bottom: 0.4rem; opacity: 0.8; }
+  .req-item { display: flex; align-items: flex-start; gap: 0.6rem; color: var(--muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 0.3rem; }
+  .req-item::before { content: '▸'; color: var(--accent); flex-shrink: 0; margin-top: 2px; opacity: 0.7; }
+  .req-note { margin-top: 1rem; padding: 0.8rem 1rem; background: rgba(192,57,43,0.07); border-left: 2px solid var(--accent-dim); border-radius: 0 3px 3px 0; color: var(--muted); font-size: 0.85rem; line-height: 1.65; font-style: italic; }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-group label { display: block; font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.45rem; }
+  .form-group input, .form-group textarea {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 2px;
+    padding: 0.7rem 1rem; color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 0.95rem;
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group textarea:focus { border-color: var(--accent-dim); }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+  .requirements-check { background: var(--surface2); border: 1px solid var(--border2); border-radius: 2px; padding: 1rem; margin-bottom: 1.2rem; }
+  .requirements-check p { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
+  .req-checkbox { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.5rem; cursor: pointer; font-size: 0.9rem; color: var(--muted); transition: color 0.2s; }
+  .req-checkbox:hover { color: var(--text); }
+  .req-checkbox input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+  .submit-btn {
+    width: 100%; padding: 0.85rem;
+    background: var(--accent); color: #fff; border: none; border-radius: 2px;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(192,57,43,0.3);
+  }
+  .submit-btn:hover { background: var(--accent-bright); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(192,57,43,0.5); }
+  .submit-btn:disabled { background: var(--muted2); cursor: not-allowed; transform: none; box-shadow: none; }
+  .alert { display: none; padding: 0.9rem 1.1rem; border-radius: 2px; margin-top: 1rem; font-size: 0.92rem; line-height: 1.5; }
+  .alert.success { background: rgba(46,139,87,0.1); border: 1px solid rgba(46,139,87,0.5); color: #5dbb84; }
+  .alert.error { background: rgba(192,57,43,0.1); border: 1px solid var(--accent-dim); color: var(--accent-bright); }
+
+  .discord-banner {
+    background: linear-gradient(135deg, #3d4bc9 0%, #2d3aa8 100%);
+    border-radius: 3px; padding: 2rem 2.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1.5rem; margin-top: 3rem; flex-wrap: wrap;
+    border: 1px solid rgba(88,101,242,0.3);
+  }
+  .discord-banner-text h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.05em; color: #fff; margin-bottom: 0.3rem; }
+  .discord-banner-text p { color: rgba(255,255,255,0.7); font-size: 0.97rem; }
+  .btn-white {
+    background: #fff; color: #3d4bc9;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 0.88rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.7rem 1.6rem; border-radius: 2px; text-decoration: none;
+    white-space: nowrap; transition: transform 0.2s, opacity 0.2s; display: inline-block;
+  }
+  .btn-white:hover { transform: translateY(-2px); opacity: 0.9; }
+
+  footer {
+    border-top: 1px solid var(--border); text-align: center; padding: 2rem;
+    color: var(--muted2); font-size: 0.82rem;
+    font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.1em;
+    position: relative; z-index: 2;
+  }
+  footer::before {
+    content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
+  }
+  footer strong { color: var(--accent); }
+
+  #page-links {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 100px 2rem 4rem; position: relative;
+  }
+
+  .orb {
+    position: fixed; border-radius: 50%; filter: blur(80px);
+    opacity: 0.07; pointer-events: none; animation: floatOrb 12s ease-in-out infinite;
+  }
+  .orb-1 { width: 500px; height: 500px; background: var(--accent); top: -100px; left: -100px; animation-delay: 0s; }
+  .orb-2 { width: 400px; height: 400px; background: var(--gold); bottom: -100px; right: -100px; animation-delay: -6s; }
+  @keyframes floatOrb { 0%,100% { transform: translate(0,0); } 50% { transform: translate(30px,20px); } }
+
+  .links-container { position: relative; width: 100%; max-width: 520px; }
+
+  .links-header { text-align: center; margin-bottom: 2.5rem; }
+  .links-eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--accent-bright); margin-bottom: 0.8rem; opacity: 0.85; }
+  .links-title { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 0.06em; color: var(--text); line-height: 1; margin-bottom: 0.4rem; }
+  .links-title .accent { color: var(--accent-bright); }
+  .links-sub { color: var(--muted); font-size: 0.9rem; font-weight: 300; letter-spacing: 0.05em; }
+
+  .avatar-wrap { position: relative; width: 88px; height: 88px; margin: 0 auto 1.2rem; }
+  .avatar-ring {
+    position: absolute; inset: -4px; border-radius: 50%;
+    background: conic-gradient(var(--accent), var(--gold), var(--accent));
+    animation: spinRing 4s linear infinite;
+  }
+  .avatar-inner {
+    position: absolute; inset: 3px; border-radius: 50%;
+    background: var(--surface2); display: flex; align-items: center;
+    justify-content: center; font-size: 2rem; z-index: 1;
+  }
+  @keyframes spinRing { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .link-card {
+    display: flex; align-items: center; gap: 1.2rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1.1rem 1.5rem; text-decoration: none; color: var(--text);
+    margin-bottom: 0.9rem; transition: transform 0.2s, border-color 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .link-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 0.2s; }
+  .link-card:hover { transform: translateY(-3px); border-color: var(--card-color, var(--accent)); }
+  .link-card:hover::before { opacity: 1; }
+
+  .link-icon-wrap {
+    width: 46px; height: 46px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 1.3rem;
+    background: var(--card-color, var(--accent)); position: relative; z-index: 1;
+  }
+  .link-info { flex: 1; position: relative; z-index: 1; }
+  .link-platform { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--card-color, var(--accent)); margin-bottom: 0.15rem; }
+  .link-name { font-size: 1rem; font-weight: 600; color: var(--text); }
+  .link-arrow { font-size: 1.1rem; color: var(--muted); transition: transform 0.2s, color 0.2s; position: relative; z-index: 1; }
+  .link-card:hover .link-arrow { transform: translateX(4px); color: var(--card-color, var(--accent)); }
+
+  .card-yt     { --card-color: #FF0000; }
+  .card-yt::before { background: linear-gradient(135deg, rgba(255,0,0,0.06), transparent); }
+  .card-twitch { --card-color: #9146FF; }
+  .card-twitch::before { background: linear-gradient(135deg, rgba(145,70,255,0.06), transparent); }
+  .card-medal  { --card-color: #d4a54a; }
+  .card-medal::before { background: linear-gradient(135deg, rgba(212,165,74,0.06), transparent); }
+  .card-discord { --card-color: #5865F2; }
+  .card-discord::before { background: linear-gradient(135deg, rgba(88,101,242,0.06), transparent); }
+
+  .links-music {
+    margin-top: 2rem; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 1.2rem 1.5rem;
+  }
+  .lm-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .lm-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 0.5rem; }
+  .lm-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .lm-dot.pulsing { animation: lmPulse 2s ease-in-out infinite; }
+  @keyframes lmPulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  .lm-track { font-size: 0.95rem; font-weight: 600; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lm-controls { display: flex; align-items: center; gap: 1rem; }
+  .lm-btn { background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; color: var(--text); padding: 0.4rem 0.9rem; font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+  .lm-btn:hover { border-color: var(--accent-dim); color: var(--accent-bright); }
+  .lm-vol { display: flex; align-items: center; gap: 0.8rem; margin-top: 0.8rem; }
+  .lm-vol-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+  .lm-viz { display: flex; align-items: flex-end; gap: 3px; height: 20px; }
+  .lm-viz-bar { width: 3px; background: var(--accent); border-radius: 2px; opacity: 0.6; }
+  .lm-viz-bar.playing { animation: lmViz 0.8s ease-in-out infinite; }
+  .lm-viz-bar:nth-child(1) { height: 4px; animation-delay: 0s; }
+  .lm-viz-bar:nth-child(2) { height: 8px; animation-delay: 0.1s; }
+  .lm-viz-bar:nth-child(3) { height: 14px; animation-delay: 0.2s; }
+  .lm-viz-bar:nth-child(4) { height: 10px; animation-delay: 0.15s; }
+  .lm-viz-bar:nth-child(5) { height: 6px; animation-delay: 0.05s; }
+  .lm-viz-bar:nth-child(6) { height: 16px; animation-delay: 0.25s; }
+  .lm-viz-bar:nth-child(7) { height: 8px; animation-delay: 0.12s; }
+  .lm-viz-bar:nth-child(8) { height: 4px; animation-delay: 0.08s; }
+  @keyframes lmViz { 0%,100% { transform: scaleY(0.3); } 50% { transform: scaleY(1); } }
+
+  .links-footer { margin-top: 2rem; text-align: center; color: var(--muted2); font-size: 0.8rem; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.08em; }
+  .links-footer strong { color: var(--accent); }
+
+  #music-widget {
+    position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 200;
+    background: rgba(10,5,7,0.97); backdrop-filter: blur(16px);
+    border: 1px solid var(--border2); border-radius: 4px;
+    padding: 0.9rem 1.2rem; width: 268px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7), 0 0 0 1px rgba(192,57,43,0.1);
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1), box-shadow 0.2s, opacity 0.3s;
+  }
+  #music-widget.hidden { opacity: 0; pointer-events: none; }
+  #music-widget:not(.collapsed) { box-shadow: 0 12px 40px rgba(192,57,43,0.15), 0 8px 32px rgba(0,0,0,0.7); }
+  #music-widget.collapsed { transform: translateY(calc(100% - 42px)); }
+  .mw-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+  .mw-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent-bright); display: flex; align-items: center; gap: 0.45rem; }
+  .mw-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+  .mw-dot.pulsing { animation: mwPulse 1.5s ease-in-out infinite; }
+  @keyframes mwPulse { 0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(192,57,43,0.5); } 50% { opacity:0.4; box-shadow: 0 0 0 4px rgba(192,57,43,0); } }
+  .mw-collapse-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.72rem; padding: 3px 8px; border-radius: 2px; transition: color 0.2s, background 0.2s; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .mw-collapse-btn:hover { color: var(--text); background: var(--surface2); }
+  .mw-track { font-size: 0.82rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.65rem; font-weight: 600; }
+  .mw-controls { display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.65rem; }
+  .mw-btn { background: var(--surface2); border: 1px solid var(--border2); color: var(--text); border-radius: 2px; padding: 5px 10px; font-size: 0.72rem; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 0.08em; cursor: pointer; transition: border-color 0.2s, color 0.2s, transform 0.1s; white-space: nowrap; }
+  .mw-btn:hover { border-color: var(--accent-dim); color: var(--accent-bright); transform: translateY(-1px); }
+  .mw-btn:active { transform: translateY(0); }
+  .mw-play-btn { flex: 1; text-align: center; }
+  .mw-track-num { font-size: 0.68rem; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.12em; margin-bottom: 0.5rem; }
+  .lm-track-count { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; }
+  .lm-play-wide { flex: 1; text-align: center; }
+  .mw-vol { display: flex; align-items: center; gap: 0.5rem; }
+  .mw-vol-icon { font-size: 0.72rem; color: var(--muted); flex-shrink: 0; }
+  .mw-vol input[type="range"], .lm-vol input[type="range"] {
+    -webkit-appearance: none; width: 100%; height: 2px;
+    background: var(--border2); border-radius: 2px; outline: none; cursor: pointer;
+  }
+  .mw-vol input[type="range"]::-webkit-slider-thumb, .lm-vol input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); cursor: pointer;
+    box-shadow: 0 0 6px rgba(192,57,43,0.5); transition: transform 0.1s;
+  }
+  .mw-vol input[type="range"]::-webkit-slider-thumb:hover, .lm-vol input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.25); }
+  .mw-viz { display: flex; align-items: flex-end; gap: 2px; height: 14px; margin-left: 0.3rem; }
+  .mw-viz-bar { width: 2px; background: var(--accent); border-radius: 1px; opacity: 0.5; height: 4px; }
+  .mw-viz-bar.playing { animation: mwViz 0.75s ease-in-out infinite; }
+  .mw-viz-bar:nth-child(1) { height: 3px; animation-delay: 0s; }
+  .mw-viz-bar:nth-child(2) { height: 7px; animation-delay: 0.1s; }
+  .mw-viz-bar:nth-child(3) { height: 12px; animation-delay: 0.2s; }
+  .mw-viz-bar:nth-child(4) { height: 8px; animation-delay: 0.13s; }
+  .mw-viz-bar:nth-child(5) { height: 5px; animation-delay: 0.06s; }
+  .mw-viz-bar:nth-child(6) { height: 10px; animation-delay: 0.22s; }
+  @keyframes mwViz { 0%,100% { transform: scaleY(0.2); } 50% { transform: scaleY(1); } }
+
+  @media (max-width: 700px) {
+    nav ul { display: none; }
+    nav { padding: 0 1.5rem; }
+    #about .about-grid { grid-template-columns: 1fr; }
+    .hero-title { font-size: 4rem; }
+    .apply-layout { grid-template-columns: 1fr; }
+    .discord-banner { flex-direction: column; text-align: center; }
+    #music-widget { width: calc(100vw - 3rem); right: 1.5rem; }
+    .hero-scar::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="slash-line"></div>
+<div class="orb orb-1" id="orb1" style="display:none"></div>
+<div class="orb orb-2" id="orb2" style="display:none"></div>
+
+<nav>
+  <div class="nav-logo" onclick="goTo('main')">
+    <span class="nav-tag">APEX</span>
+    United War Command
+  </div>
+  <ul>
+    <li><button class="nav-btn" id="nav-home"    onclick="goTo('main'); scrollTo('#home')">Home</button></li>
+    <li><button class="nav-btn" id="nav-about"   onclick="goTo('main'); scrollTo('#about')">About</button></li>
+    <li><button class="nav-btn" id="nav-command" onclick="goTo('main'); scrollTo('#command')">Command</button></li>
+    <li><button class="nav-btn" id="nav-rules"   onclick="goTo('main'); scrollTo('#rules')">Rules</button></li>
+    <li><button class="nav-btn" id="nav-allies"  onclick="goTo('main'); scrollTo('#allies')">Allies</button></li>
+    <li><button class="nav-btn" id="nav-apply"   onclick="goTo('main'); scrollTo('#apply')">Apply</button></li>
+    <li><button class="nav-btn" id="nav-links"   onclick="goTo('links')">Links</button></li>
+    <li>
+      <a href="https://discord.gg/muBpBaPeZF" target="_blank" class="nav-discord">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Discord
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<!-- MAIN PAGE -->
+<div id="page-main" class="page active">
+
+  <section id="home" style="max-width:100%; padding:0;">
+    <div class="hero-glow"></div>
+    <div class="hero-scar"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">War Tycoon Faction · Tag: [APEX]</div>
+      <h1 class="hero-title">United<br><span class="accent">War</span><br>Command</h1>
+      <p class="hero-sub">Discipline. Unity. Dominance.</p>
+      <div class="hero-badges">
+        <span class="badge primary">Active Faction</span>
+        <span class="badge">War Tycoon</span>
+        <span class="badge">Est. 2026</span>
+      </div>
+      <div class="hero-actions">
+        <!-- FIXED: now scrolls to #apply section -->
+        <button class="btn btn-primary" onclick="scrollTo('#apply')">Apply to Join</button>
+        <a href="https://discord.gg/muBpBaPeZF" target="_blank" class="btn btn-discord">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          Join Discord
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="fade-in">
+      <div class="section-label">Who We Are</div>
+      <h2 class="section-title">About APEX</h2>
+      <div class="section-divider"></div>
+      <p class="section-text">United War Command, operating under the tag [APEX], is an elite War Tycoon faction built on discipline, coordination, and tactical superiority. We welcome dedicated players who are committed to the mission and loyal to the cause.</p>
+    </div>
+    <div class="about-grid fade-in">
+      <div class="about-card"><h3>Our Mission</h3><p>To dominate the battlefield through strategic coordination, strong leadership, and unwavering teamwork. Every member is a vital part of the machine.</p></div>
+      <div class="about-card"><h3>Our Values</h3><p>Respect, loyalty, and discipline define APEX. We hold our members to a high standard both in combat and in conduct.</p></div>
+      <div class="about-card"><h3>Advancement</h3><p>Active and skilled members are recognized and promoted. Show up, perform, and climb the ranks of the United War Command.</p></div>
+      <div class="about-card"><h3>Community</h3><p>We're more than a faction — we're a community. Build friendships, sharpen your skills, and compete at the highest level.</p></div>
+    </div>
+  </section>
+
+  <div id="command">
+    <div class="inner">
+      <div class="fade-in">
+        <div class="section-label">Leadership Structure</div>
+        <h2 class="section-title">Chain of Command</h2>
+        <div class="section-divider"></div>
+        <p class="section-text">Meet the dedicated staff members who lead United War Command.</p>
+      </div>
+      <div class="coc-grid fade-in">
+        <div class="coc-card tier-marshal"><div class="coc-rank-icon">I</div><div class="coc-info"><div class="coc-rank">APEX Marshal</div><div class="coc-names"><span>@Sr.Crushalot</span><span>@Ducky™</span></div></div></div>
+        <div class="coc-card tier-general"><div class="coc-rank-icon">II</div><div class="coc-info"><div class="coc-rank">APEX General</div><div class="coc-names"><span>@Dudeman24k</span></div></div></div>
+        <div class="coc-card tier-general"><div class="coc-rank-icon">II</div><div class="coc-info"><div class="coc-rank">APEX Staff Overseer</div><div class="coc-names"><span>TBD</span></div></div></div>
+        <div class="coc-card tier-general"><div class="coc-rank-icon">II</div><div class="coc-info"><div class="coc-rank">APEX Operations Manager</div><div class="coc-names"><span>TBD</span></div></div></div>
+        <div class="coc-card tier-officer"><div class="coc-rank-icon">III</div><div class="coc-info"><div class="coc-rank">APEX Colonel</div><div class="coc-names"><span>TBD</span></div></div></div>
+        <div class="coc-card tier-officer"><div class="coc-rank-icon">III</div><div class="coc-info"><div class="coc-rank">APEX Major</div><div class="coc-names"><span>@TBD</span></div></div></div>
+        <div class="coc-card tier-officer"><div class="coc-rank-icon">III</div><div class="coc-info"><div class="coc-rank">APEX Captain</div><div class="coc-names"><span>@-Praist- mountlopa</span></div></div></div>
+        <div class="coc-card tier-enlisted"><div class="coc-rank-icon">IV</div><div class="coc-info"><div class="coc-rank">Officer Corps</div><div class="coc-names"><span>Open Positions</span></div></div></div>
+        <div class="coc-card tier-enlisted"><div class="coc-rank-icon">IV</div><div class="coc-info"><div class="coc-rank">Cadet</div><div class="coc-names"><span>Entry Level</span></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="rules">
+    <div class="fade-in">
+      <div class="section-label">Code of Conduct</div>
+      <h2 class="section-title">Faction Rules</h2>
+      <div class="section-divider"></div>
+      <p class="section-text">All members of APEX are expected to uphold these standards at all times.</p>
+    </div>
+    <div class="rules-list fade-in">
+      <div class="rule-item"><div class="rule-num">01</div><div class="rule-text"><h4>Be Respectful</h4><p>Show respect to everyone in the server. Harassment, bullying, or rude behavior won't be tolerated.</p></div></div>
+      <div class="rule-item"><div class="rule-num">02</div><div class="rule-text"><h4>Follow Chain of Command</h4><p>Always follow orders from superior officers. Disputes must be raised through proper channels, not ignored or bypassed.</p></div></div>
+      <div class="rule-item"><div class="rule-num">03</div><div class="rule-text"><h4>No Betrayal or Leaking</h4><p>Sharing APEX strategies, plans, or internal information with enemies or outsiders is grounds for immediate removal.</p></div></div>
+      <div class="rule-item"><div class="rule-num">04</div><div class="rule-text"><h4>Stay Active</h4><p>Inactive members may be demoted or removed. Notify leadership if you will be away for an extended period.</p></div></div>
+      <div class="rule-item"><div class="rule-num">05</div><div class="rule-text"><h4>Represent APEX Professionally</h4><p>Your behavior reflects on the whole faction. Act with discipline and integrity whenever the [APEX] tag is visible.</p></div></div>
+      <div class="rule-item"><div class="rule-num">06</div><div class="rule-text"><h4>Promotion Is Earned</h4><p>Ranks are awarded based on activity, performance, loyalty, and leadership ability — not seniority alone.</p></div></div>
+    </div>
+  </section>
+
+  <section id="allies">
+    <div class="fade-in">
+      <div class="section-label">Diplomatic Relations</div>
+      <h2 class="section-title">Our Allies</h2>
+      <div class="section-divider"></div>
+      <p class="section-text">These factions stand alongside United War Command. Treat their members with the same respect as your own.</p>
+    </div>
+    <div class="allies-grid fade-in">
+      <!-- USSR -->
+      <div class="ally-card"><div class="ally-icon">🤝</div><div class="ally-name">USSR</div><div class="ally-status">Allied</div></div>
+      <!-- TS -->
+      <div class="ally-card"><div class="ally-icon">⚔️</div><div class="ally-name">TS</div><div class="ally-status">Allied</div></div>
+      <!-- DOOM -->
+      <div class="ally-card"><div class="ally-icon">💀</div><div class="ally-name">DOOM</div><div class="ally-status">Allied</div></div>
+    </div>
+  </section>
+
+  <div id="apply">
+    <div class="inner">
+      <div class="fade-in">
+        <div class="section-label">Join The Faction</div>
+        <h2 class="section-title">Apply to APEX</h2>
+        <div class="section-divider"></div>
+        <p class="section-text">Think you have what it takes? Review the requirements and submit your application below.</p>
+      </div>
+      <div class="apply-layout fade-in">
+        <div class="req-panel">
+          <h3>📋 Requirements</h3>
+          <div class="req-category"><div class="req-category-title">Activity</div><div class="req-item">You MUST be active by participating in events such as raiding and Daily Tasks.</div></div>
+          <div class="req-category"><div class="req-category-title">Rebirths</div><div class="req-item">MINIMUM 7 rebirths required. 9+ recommended to have everything unlocked.</div></div>
+          <div class="req-category"><div class="req-category-title">Player Level</div><div class="req-item">You MUST be at least player level 5. Higher level = more likely to be recruited.</div></div>
+          <div class="req-category"><div class="req-category-title">KDR (Kill/Death Ratio)</div><div class="req-item">We do not recommend a KD less than 1.0, but we conduct a skill test regardless.</div></div>
+          <div class="req-category"><div class="req-category-title">Playtime</div><div class="req-item">We prefer at least 100+ hours. Anything over 75 hours is acceptable based on skill level.</div></div>
+          <div class="req-note">These are guidelines — we do conduct a skill test. If you meet the skill requirement you may still be recruited even if you don't meet every requirement.</div>
+        </div>
+        <div class="apply-form-wrap">
+          <h3>📝 Submit Application</h3>
+          <form id="applyForm">
+            <div class="form-group"><label>Roblox Username</label><input type="text" id="robloxName" placeholder="Your Roblox username" required></div>
+            <div class="form-group"><label>Discord Username</label><input type="text" id="discordName" placeholder="e.g. username or @username" required></div>
+            <div class="form-group">
+              <label>Discord User ID</label>
+              <input type="text" id="discordId" placeholder="e.g. 123456789012345678" required pattern="[0-9]{17,19}" title="Enter your 17-19 digit Discord User ID">
+              <div style="margin-top:0.35rem; font-size:0.78rem; color:var(--muted); line-height:1.5;">To find your ID: Discord → Settings → Advanced → Enable Developer Mode, then right-click your name → Copy User ID</div>
+            </div>
+            <div class="form-group"><label>Age</label><input type="number" id="age" placeholder="Your age" min="1" max="99" required></div>
+            <div class="requirements-check">
+              <p>Do you meet the requirements?</p>
+              <label class="req-checkbox"><input type="checkbox" id="req-activity"> I am active and can participate in raids & Daily Tasks</label>
+              <label class="req-checkbox"><input type="checkbox" id="req-rebirths"> I have at least 7 rebirths (9+ preferred)</label>
+              <label class="req-checkbox"><input type="checkbox" id="req-level"> I am at least player level 5</label>
+              <label class="req-checkbox"><input type="checkbox" id="req-kdr"> My KDR is 1.0 or above (or I'm willing to do a skill test)</label>
+              <label class="req-checkbox"><input type="checkbox" id="req-playtime"> I have at least 75+ hours of playtime</label>
+            </div>
+            <div class="form-group"><label>Anything else? (optional)</label><textarea id="extraInfo" placeholder="Additional info, special skills, why you want to join APEX..."></textarea></div>
+            <button type="submit" class="submit-btn" id="submitBtn">Submit Application</button>
+            <div class="alert success" id="successAlert">✅ Application submitted! Leadership will review it and reach out via Discord DM using the ID you provided.</div>
+            <div class="alert error" id="errorAlert">❌ Something went wrong. Please try again or reach out on Discord.</div>
+          </form>
+        </div>
+      </div>
+      <div class="discord-banner fade-in">
+        <div class="discord-banner-text">
+          <h3>Join Our Discord</h3>
+          <p>Stay up to date with events, raids, and faction announcements. All members are required to be in the server.</p>
+        </div>
+        <a href="https://discord.gg/muBpBaPeZF" target="_blank" class="btn-white">Join Server →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p><strong>[APEX]</strong> United War Command &nbsp;·&nbsp; War Tycoon &nbsp;·&nbsp; All rights reserved.</p>
+  </footer>
+
+</div><!-- end page-main -->
+
+<!-- LINKS PAGE -->
+<div id="page-links" class="page">
+  <div class="links-container">
+
+    <div class="links-header">
+      <div class="avatar-wrap">
+        <div class="avatar-ring"></div>
+        <div class="avatar-inner">⚔️</div>
+      </div>
+      <div class="links-eyebrow">United War Command · [APEX]</div>
+      <h1 class="links-title">Sr.<span class="accent">Crushalot</span></h1>
+      <p class="links-sub">Commander · Content Creator · War Tycoon</p>
+    </div>
+
+    <a href="https://www.youtube.com/@Sr.Crushalot" target="_blank" class="link-card card-yt">
+      <div class="link-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      </div>
+      <div class="link-info">
+        <div class="link-platform">YouTube</div>
+        <div class="link-name">@Sr.Crushalot</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <a href="https://www.twitch.tv/voxzv2" target="_blank" class="link-card card-twitch">
+      <div class="link-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
+      </div>
+      <div class="link-info">
+        <div class="link-platform">Twitch</div>
+        <div class="link-name">voxzv2</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <a href="https://medal.tv/u/SirCrushalot/?invite=ur-MSw0UWksMzg3OTQwMzM3" target="_blank" class="link-card card-medal">
+      <div class="link-icon-wrap">🏅</div>
+      <div class="link-info">
+        <div class="link-platform">Medal.tv</div>
+        <div class="link-name">SirCrushalot</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <a href="https://discord.gg/muBpBaPeZF" target="_blank" class="link-card card-discord">
+      <div class="link-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      </div>
+      <div class="link-info">
+        <div class="link-platform">Discord</div>
+        <div class="link-name">APEX – United War Command</div>
+      </div>
+      <div class="link-arrow">→</div>
+    </a>
+
+    <div class="links-music">
+      <div class="lm-top">
+        <div class="lm-label">
+          <div class="lm-dot" id="lmDot"></div>
+          Now Playing
+          <div class="lm-viz">
+            <div class="lm-viz-bar"></div><div class="lm-viz-bar"></div><div class="lm-viz-bar"></div>
+            <div class="lm-viz-bar"></div><div class="lm-viz-bar"></div><div class="lm-viz-bar"></div>
+            <div class="lm-viz-bar"></div><div class="lm-viz-bar"></div>
+          </div>
+        </div>
+        <div class="lm-track-count" id="lmTrackCount">1 / 5</div>
+      </div>
+      <div class="lm-track" id="lmTrack">Loading...</div>
+      <div class="lm-controls">
+        <button class="lm-btn" id="lmPrev">⏮</button>
+        <button class="lm-btn lm-play-wide" id="lmPlay">▶ Play</button>
+        <button class="lm-btn" id="lmNext">⏭</button>
+      </div>
+      <div class="lm-vol">
+        <span class="lm-vol-label">🔊 Volume</span>
+        <input type="range" id="lmVol" min="0" max="100" value="60">
+      </div>
+    </div>
+
+    <div class="links-footer">
+      <p><strong>[APEX]</strong> United War Command &nbsp;·&nbsp; War Tycoon</p>
+    </div>
+
+  </div>
+</div><!-- end page-links -->
+
+<!-- HIDDEN SOUNDCLOUD IFRAME -->
+<iframe id="sc-iframe"
+  src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/slickhzmonitors/sets/apex-songs&color=%23c0392b&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"
+  style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;bottom:0;left:0;"
+  allow="autoplay">
+</iframe>
+
+<!-- FLOATING MUSIC WIDGET -->
+<div id="music-widget" class="collapsed">
+  <div class="mw-top">
+    <div class="mw-label">
+      <div class="mw-dot" id="mwDot"></div>
+      Now Playing
+      <div class="mw-viz">
+        <div class="mw-viz-bar"></div><div class="mw-viz-bar"></div><div class="mw-viz-bar"></div>
+        <div class="mw-viz-bar"></div><div class="mw-viz-bar"></div><div class="mw-viz-bar"></div>
+      </div>
+    </div>
+    <button class="mw-collapse-btn" id="mwToggle">▲ Music</button>
+  </div>
+  <div class="mw-track" id="mwTrack">Loading...</div>
+  <div class="mw-track-num" id="mwTrackNum">Track 1 / 5</div>
+  <div class="mw-controls">
+    <button class="mw-btn" id="mwPrev">⏮</button>
+    <button class="mw-btn mw-play-btn" id="mwPlay">▶ Play</button>
+    <button class="mw-btn" id="mwNext">⏭</button>
+  </div>
+  <div class="mw-vol">
+    <span class="mw-vol-icon">🔊</span>
+    <input type="range" id="mwVol" min="0" max="100" value="60">
+  </div>
+</div>
+
+<script>
+/* ROUTER */
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
+  if (page === 'links') {
+    document.getElementById('nav-links').classList.add('nav-active');
+    document.getElementById('music-widget').classList.add('hidden');
+    document.getElementById('orb1').style.display = 'block';
+    document.getElementById('orb2').style.display = 'block';
+    window.scrollTo(0, 0);
+  } else {
+    document.getElementById('music-widget').classList.remove('hidden');
+    document.getElementById('orb1').style.display = 'none';
+    document.getElementById('orb2').style.display = 'none';
+    reobserve();
+  }
+  location.hash = page === 'links' ? 'links' : '';
+}
+
+function scrollTo(selector) {
+  setTimeout(() => {
+    const el = document.querySelector(selector);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }, 50);
+}
+
+window.addEventListener('hashchange', () => {
+  if (location.hash === '#links') goTo('links'); else goTo('main');
+});
+if (location.hash === '#links') goTo('links');
+
+/* SCROLL FADE-IN */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+function reobserve() {
+  document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+}
+reobserve();
+
+/* APPLICATION FORM */
+document.getElementById('applyForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const ok = document.getElementById('successAlert');
+  const err = document.getElementById('errorAlert');
+  ok.style.display = 'none'; err.style.display = 'none';
+
+  const roblox    = document.getElementById('robloxName').value.trim();
+  const discord   = document.getElementById('discordName').value.trim();
+  const discordId = document.getElementById('discordId').value.trim();
+  const age       = document.getElementById('age').value.trim();
+  const extra     = document.getElementById('extraInfo').value.trim();
+
+  const labels = {
+    'req-activity': 'Activity',
+    'req-rebirths': 'Rebirths 7+',
+    'req-level':    'Level 5+',
+    'req-kdr':      'KDR 1.0+',
+    'req-playtime': 'Playtime 75h+'
+  };
+  const met = [], notMet = [];
+  for (const [id, label] of Object.entries(labels)) {
+    if (document.getElementById(id).checked) met.push(label); else notMet.push(label);
+  }
+
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  // Build embed with Discord mention so you can click their name to DM them
+  const payload = {
+    // Ping their user ID in the message content so Discord creates a clickable mention
+    content: `📬 New application from <@${discordId}> — click their name to open a DM.`,
+    embeds: [{
+      title: '📋 New APEX Application',
+      color: 0xc0392b,
+      fields: [
+        {
+          name: '🎮 Roblox / Discord',
+          value: `Roblox: **${roblox}**\nDiscord: **${discord}**\nDiscord ID: **${discordId}**`,
+          inline: false
+        },
+        { name: '🎂 Age', value: age, inline: true },
+        {
+          name: '📊 Requirements',
+          value: (met.length    ? `✅ Met: ${met.join(', ')}`     : '❌ None met') +
+                 (notMet.length ? `\n❌ Not met: ${notMet.join(', ')}` : ''),
+          inline: false
+        },
+        ...(extra ? [{ name: '💬 Notes', value: extra, inline: false }] : []),
+        {
+          name: '💌 Reply to Applicant',
+          value: `To DM this applicant: go to the mention above, click their name → **Message**.\nTheir Discord ID: \`${discordId}\``,
+          inline: false
+        }
+      ],
+      footer: { text: 'APEX Application System · Reply via DM using the mention above' },
+      timestamp: new Date().toISOString()
+    }]
+  };
+
+  try {
+    const res = await fetch('https://discord.com/api/webhooks/1474576972352061482/RzQYPy-aJR_Vrl7Siml7CaI4bgeTbKoqaWG-wgUe9ndZmrW55m1kgw2AfJpBAbJmkucT', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      ok.style.display = 'block';
+      document.getElementById('applyForm').reset();
+    } else {
+      err.style.display = 'block';
+    }
+  } catch {
+    err.style.display = 'block';
+  }
+
+  btn.disabled = false; btn.textContent = 'Submit Application';
+});
+
+/* SOUNDCLOUD WIDGET ENGINE */
+(function() {
+  let widget = null, playing = false, trackCount = 0, currentIndex = 0;
+  let widgetReady = false, pendingPlay = false;
+
+  function setTrackUI(title, idx) {
+    const display = title || 'Unknown Track';
+    const num = 'Track ' + (idx + 1) + ' / ' + (trackCount || 5);
+    document.getElementById('mwTrack').textContent = display;
+    document.getElementById('mwTrackNum').textContent = num;
+    document.getElementById('lmTrack').textContent = display;
+    document.getElementById('lmTrackCount').textContent = (idx + 1) + ' / ' + (trackCount || 5);
+  }
+
+  function setPlayingUI(state) {
+    playing = state;
+    const label = state ? '⏸ Pause' : '▶ Play';
+    document.getElementById('mwPlay').textContent = label;
+    document.getElementById('lmPlay').textContent = label;
+    document.getElementById('mwDot').classList.toggle('pulsing', state);
+    document.getElementById('lmDot').classList.toggle('pulsing', state);
+    document.querySelectorAll('.mw-viz-bar, .lm-viz-bar').forEach(b => b.classList.toggle('playing', state));
+  }
+
+  function loadSCApi(cb) {
+    if (window.SC) { cb(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://w.soundcloud.com/player/api.js';
+    s.onload = cb;
+    document.head.appendChild(s);
+  }
+
+  function initWidget() {
+    loadSCApi(() => {
+      const iframe = document.getElementById('sc-iframe');
+      widget = SC.Widget(iframe);
+
+      widget.bind(SC.Widget.Events.READY, () => {
+        widgetReady = true;
+        widget.getSounds(sounds => {
+          trackCount = sounds.length;
+          if (sounds[0]) setTrackUI(sounds[0].title, 0);
+        });
+        widget.setVolume(parseInt(document.getElementById('mwVol').value));
+        if (pendingPlay) { widget.play(); pendingPlay = false; }
+      });
+
+      widget.bind(SC.Widget.Events.PLAY, () => {
+        widget.getCurrentSoundIndex(i => {
+          currentIndex = i;
+          widget.getCurrentSound(sound => {
+            if (sound) setTrackUI(sound.title, i);
+          });
+        });
+        setPlayingUI(true);
+      });
+
+      widget.bind(SC.Widget.Events.PAUSE, () => setPlayingUI(false));
+
+      widget.bind(SC.Widget.Events.FINISH, () => {
+        const nextIdx = (currentIndex + 1) % (trackCount || 5);
+        widget.skip(nextIdx);
+        setTimeout(() => widget.play(), 200);
+      });
+    });
+  }
+
+  function doPlay() {
+    if (!widgetReady) { pendingPlay = true; return; }
+    widget.play();
+  }
+  function doPause() {
+    if (!widgetReady) return;
+    widget.pause();
+  }
+  function togglePlay() {
+    if (!playing) doPlay(); else doPause();
+  }
+  function goPrev() {
+    if (!widgetReady) return;
+    const idx = (currentIndex - 1 + (trackCount || 5)) % (trackCount || 5);
+    widget.skip(idx);
+    setTimeout(() => widget.play(), 150);
+  }
+  function goNext() {
+    if (!widgetReady) return;
+    const idx = (currentIndex + 1) % (trackCount || 5);
+    widget.skip(idx);
+    setTimeout(() => widget.play(), 150);
+  }
+  function setVol(v) {
+    if (widget && widgetReady) widget.setVolume(parseInt(v));
+  }
+
+  initWidget();
+
+  let collapsed = true;
+  document.getElementById('mwToggle').addEventListener('click', () => {
+    collapsed = !collapsed;
+    document.getElementById('music-widget').classList.toggle('collapsed', collapsed);
+    document.getElementById('mwToggle').textContent = collapsed ? '▲ Music' : '▼ Close';
+  });
+  document.getElementById('mwPlay').addEventListener('click', togglePlay);
+  document.getElementById('mwPrev').addEventListener('click', goPrev);
+  document.getElementById('mwNext').addEventListener('click', goNext);
+  document.getElementById('mwVol').addEventListener('input', e => {
+    setVol(e.target.value);
+    document.getElementById('lmVol').value = e.target.value;
+  });
+
+  document.getElementById('lmPlay').addEventListener('click', togglePlay);
+  document.getElementById('lmPrev').addEventListener('click', goPrev);
+  document.getElementById('lmNext').addEventListener('click', goNext);
+  document.getElementById('lmVol').addEventListener('input', e => {
+    setVol(e.target.value);
+    document.getElementById('mwVol').value = e.target.value;
+  });
+
+  function autoStart() {
+    if (playing) return;
+    doPlay();
+    collapsed = false;
+    document.getElementById('music-widget').classList.remove('collapsed');
+    document.getElementById('mwToggle').textContent = '▼ Close';
+    ['click','keydown','touchstart'].forEach(ev => document.removeEventListener(ev, autoStart));
+  }
+  ['click','keydown','touchstart'].forEach(ev => document.addEventListener(ev, autoStart, { once: true }));
+})();
+</script>
+
+</body>
+</html>
